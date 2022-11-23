@@ -53,10 +53,9 @@ class Team(Base):
         scores = (
             session.query(
                 Service.team_id,
-                func.sum(Service.points).label("score"),
+                (Service.points * func.sum(Check.result)).label("score"),
             )
             .join(Check)
-            .filter(Check.result.is_(True))
             .group_by(Service.team_id)
             .order_by(desc("score"))
             .all()
